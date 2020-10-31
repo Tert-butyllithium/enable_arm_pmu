@@ -1,8 +1,11 @@
-obj-m	:= enable_arm_pmu.o
-KDIR	:= /lib/modules/$(shell uname -r)/build
-PWD	:= $(shell pwd)
+PWD         := $(shell pwd) 
+KVERSION    := $(shell uname -r)
+KERNEL_DIR   = /usr/src/linux-headers-$(KVERSION)/
+
+MODULE_NAME  = enable_arm_pmu
+obj-m       := $(MODULE_NAME).o   
 
 all:
-	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) modules
+	make -C $(KERNEL_DIR) M=$(PWD) modules
 clean:
-	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) clean
+	make -C $(KERNEL_DIR) M=$(PWD) clean
