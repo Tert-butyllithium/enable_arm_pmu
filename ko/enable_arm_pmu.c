@@ -66,13 +66,13 @@ enable_cpu_counters(void *data)
 	/* G4.4.11
 	 * PMINTENSET, Performance Monitors Interrupt Enable Set register */
 	/* cycle counter overflow interrupt request is disabled */
-	asm volatile("msr pmintenset_el1, %0"
-				 :
-				 : "r"((u64)(0 << 31)));
 	/*   Performance Monitors Count Enable Set register bit 30:0 disable, 31 enable */
 	asm volatile("msr pmcntenset_el0, %0"
 				 :
 				 : "r"(ARMV8_PMCNTENSET_EL0_ENABLE));
+	asm volatile("msr pmintenset_el1, %0"
+				 :
+				 : "r"(0x1));
 	/* start*/
 	armv8pmu_pmcr_write(armv8pmu_pmcr_read() | ARMV8_PMCR_E);
 #elif defined(__ARM_ARCH_7A__)
@@ -119,6 +119,15 @@ static int __init init(void)
 {
 	on_each_cpu(enable_cpu_counters, NULL, 1);
 	printk(KERN_INFO "[" DRVR_NAME "] initialized");
+
+	uint32_t t = 0;
+	asm("MRS %0, PMINTENSET_EL1"
+		: "=r"(t));
+	printk(KERN_INFO "[NINJA] PMINTENSET_EL1=0x%08x\n", t);
+
+	asm("MRS %0, MIDR_EL1"
+		: "=r"(t));
+	printk(KERN_INFO "[NINJA] MIDR_EL1=0x%08x\n", t);
 	return 0;
 }
 
