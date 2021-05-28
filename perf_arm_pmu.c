@@ -4,7 +4,17 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+#include <sys/types.h>
+#include <unistd.h>
+
 #include "armpmu_lib.h"
+
+#define WRITE_REG(src, reg)            \
+        {                              \
+                asm("mov " #reg ", %0" \
+                    :                  \
+                    : "r"(src));       \
+        }
 
 /* Simple loop body to keep things interested. Make sure it gets inlined. */
 static inline int
@@ -15,6 +25,10 @@ loop(int *__restrict__ a, int *__restrict__ b, int n)
                 if (a[i] > b[i])
                         sum += a[i] + 5;
         return sum;
+}
+
+void gao(int pid)
+{
 }
 
 int main(int ac, char **av)
@@ -44,15 +58,24 @@ int main(int ac, char **av)
         }
 
         printf("%s: beginning loop\n", av[0]);
-        time_start = rdtsc32();
-        sum = loop(a, b, len);
-        time_end = rdtsc32();
-        printf("%s: done. sum = %d; time delta = %u\n", av[0], sum, time_end - time_start);
-
-        printf("%s: beginning loop\n", av[0]);
         // ARM_PMU_INST_RETIRED   0x0008
+
         enable_pmu(0x008);
         time_start = rdtsc32();
+
+        // 获取当前 PID
+        int pid = getpid();
+        printf("Current PID=%d\n", pid);
+
+        // 将 PMU 计数器设成最大
+        uint32_t r = 0xffffffff;
+        asm volatile("msr pmevcntr0_el0, %0"
+                     :
+                     : "r"(r));
+
+        // 将所有寄存器设成目前的 pid
+        gao(pid);
+
         cnt_start = read_pmu();
         printf("%s: PMU start at %8x \n",av[0], cnt_start);
         sum = loop(a, b, len);

@@ -1,4 +1,4 @@
-all: ko/enable_arm_pmu.ko perf_arm_pmu perf_event_open
+all: perf_arm_pmu perf_event_open
 perf_arm_pmu: perf_arm_pmu.c
 	@echo CC perf_arm_pmu
 	@$(CC) -O3 -std=gnu99 perf_arm_pmu.c -o perf_arm_pmu 

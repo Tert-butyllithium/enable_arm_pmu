@@ -53,6 +53,7 @@ read_pmu(void)
 #if defined(__GNUC__) && defined __aarch64__
         uint32_t r = 0;
 	asm volatile("mrs %0, pmevcntr0_el0" : "=r" (r)); 
+	printf("[INFO] PMEVCNTR0 = 0x%8x\n", r);
 	return r;
 #else
 #error Unsupported architecture/compiler!
