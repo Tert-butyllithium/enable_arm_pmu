@@ -39,6 +39,9 @@ enable_pmu(uint32_t evtCount)
 
 	asm volatile("mrs %0, pmcntenset_el0" : "=r" (r));
 	asm volatile("msr pmcntenset_el0, %0" : : "r" (r|1));
+
+    uint32_t p = 0xfffffffe;
+	asm volatile("msr  pmevcntr0_el0, %0" : :"r" (p));
 #else
 #error Unsupported architecture/compiler!
 #endif

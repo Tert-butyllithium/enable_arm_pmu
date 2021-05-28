@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 #include "armpmu_lib.h"
 
@@ -53,8 +54,12 @@ int main(int ac, char **av)
         enable_pmu(0x008);
         time_start = rdtsc32();
         cnt_start = read_pmu();
+        printf("%s: PMU start at %8x \n",av[0], cnt_start);
         sum = loop(a, b, len);
+        // usleep(200);
+        // __asm__("nop");
         cnt_end = read_pmu();
+        printf("%s: PMU end at %8x \n",av[0], cnt_end);
         time_end = rdtsc32();
         disable_pmu(0x008);
         printf("%s: done. sum = %d; time delta = %u; event 0x%03x delta = %u\n", av[0], sum, time_end - time_start, 0x008, cnt_end - cnt_start);

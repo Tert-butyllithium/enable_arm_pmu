@@ -2,7 +2,7 @@
 
 This repository contains a kernel module and library.
 
-ARM performance monitor units (PMUs) are only available on ARMv7 machines. In
+ARM performance monitor units (PMUs) are only available on ~~ARMv7~~ ARMv8 machines. In
 general, this means you'll need a Cortex-A7 or better (A8, A9, A15, etc.)
 
 More details are available in [my blog post][blog].
@@ -25,8 +25,9 @@ $ sudo make runtests
   * ODROID-U2
     * Exynos 4 Quad, 1.7gHz Cortex-A9
     * Ubuntu/Linaro 12.10 derivative
-
-TBD: PandaBoard.
+  * Raspberry Pi 3B
+    * Broadcom BCM2837 Quad, 1.2gHz Cortex-A53
+    * Debian GNU/Linux 10
 
 # Join in
 
